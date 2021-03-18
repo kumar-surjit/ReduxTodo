@@ -21,6 +21,8 @@ export default class App extends Component {
     statusInputText: '',
     label: '',
     editTaskId: null,
+    status: null,
+    unsubscribe: null,
   };
 
   inputTextHandler = (type, value) => {
@@ -33,12 +35,17 @@ export default class App extends Component {
         this.setState({descriptionInputText: value});
         break;
       case 'status':
-        this.setState({statusInputText: value});
+        this.setState({status: value});
         break;
       default:
         break;
     }
     // console.log(task);
+  };
+
+  statusHandler = value => {
+    console.log('value is here: ', value);
+    this.setState({status: value});
   };
 
   addButtonClicked = () => {
@@ -47,7 +54,7 @@ export default class App extends Component {
       modalVisible: true,
       titleInputText: '',
       descriptionInputText: '',
-      statusInputText: '',
+      status: null,
     });
   };
 
@@ -55,14 +62,14 @@ export default class App extends Component {
     const {
       titleInputText,
       descriptionInputText,
-      statusInputText,
+      status,
       modalVisible,
     } = this.state;
     if (titleInputText === '' && descriptionInputText === '') {
       alert('please enter a task');
     } else {
-      if (statusInputText === '') addTask(titleInputText, descriptionInputText);
-      else addTask(titleInputText, descriptionInputText, statusInputText);
+      if (status === null) addTask(titleInputText, descriptionInputText);
+      else addTask(titleInputText, descriptionInputText, status);
       this.setModalVisible(!modalVisible);
     }
   };
@@ -84,17 +91,12 @@ export default class App extends Component {
       editTaskId,
       titleInputText,
       descriptionInputText,
-      statusInputText,
+      status,
       modalVisible,
     } = this.state;
     // console.log(titleInputText);
     if (editTaskId !== null) {
-      editTask(
-        editTaskId,
-        titleInputText,
-        descriptionInputText,
-        statusInputText,
-      );
+      editTask(editTaskId, titleInputText, descriptionInputText, status);
       this.setModalVisible(!modalVisible);
     }
   };
@@ -112,7 +114,9 @@ export default class App extends Component {
   };
 
   _renderItem = ({item, index}) => (
-    <View style={styles.itemStyle}>
+    <View
+      // style={[styles.itemStyle, item.status === "Pending" ? {backgroundColor: colors.themeRed}: {backgroundColor: "#00d696"}]}
+      style={styles.itemStyle}>
       <View style={styles.itemHeaderContainer}>
         <Text style={styles.itemHeadingTextStyle}>{item.title}</Text>
         <View style={{flexDirection: 'row'}}>
@@ -140,7 +144,7 @@ export default class App extends Component {
       modalVisible,
       titleInputText,
       descriptionInputText,
-      statusInputText,
+      status,
       label,
     } = this.state;
     const {tasks} = store.getState();
@@ -168,8 +172,9 @@ export default class App extends Component {
           editTodo={this.saveEditTaskChanges}
           title={titleInputText}
           description={descriptionInputText}
-          status={statusInputText}
+          status={status}
           label={label}
+          statusHandler={this.statusHandler}
         />
       </View>
     );

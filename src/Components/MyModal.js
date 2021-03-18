@@ -8,8 +8,9 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {BlurView, VibrancyView} from '@react-native-community/blur';
 import colors from '../styles/colors';
-import {Dropdown} from 'react-native-material-dropdown';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default class MyModal extends Component {
   handleSubmit = () => {
@@ -52,15 +53,37 @@ export default class MyModal extends Component {
                   }
                   style={[styles.inputFieldStyle, {marginBottom: 6}]}
                 />
-                <TextInput
+                {/* <TextInput
                   placeholder="Enter status here..."
                   value={status}
                   onChangeText={value =>
                     this.props.inputTextHandler('status', value)
                   }
                   style={styles.inputFieldStyle}
+                /> */}
+                <DropDownPicker
+                  items={[
+                    {
+                      label: 'Pending',
+                      value: 'Pending',
+                    },
+                    {
+                      label: 'Completed',
+                      value: 'Completed',
+                    },
+                  ]}
+                  placeholder="Please select a status"
+                  defaultValue={status}
+                  containerStyle={{height: 40, marginTop: 6}}
+                  style={{backgroundColor: '#fafafa'}}
+                  itemStyle={{
+                    justifyContent: 'flex-start',
+                  }}
+                  dropDownStyle={{backgroundColor: '#fafafa'}}
+                  onChangeItem={item =>
+                    this.props.inputTextHandler('status', item.value)
+                  }
                 />
-
                 <TouchableOpacity
                   style={[styles.button, styles.buttonClose]}
                   onPress={this.handleSubmit}>
@@ -100,7 +123,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    elevation: 2,
     marginTop: 25,
   },
   buttonOpen: {
